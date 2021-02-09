@@ -15,8 +15,8 @@ public class PicServiceImpl implements PicService {
     private PicRepository picRepository;
 
     @Override
-    public PicturePo getPicDetail() {
-        return null;
+    public PicturePo getPicDetail(Long id) {
+        return picRepository.findById(id).get();
     }
 
     @Override

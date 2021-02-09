@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PicService {
     // 根据id名，查询所有的信息
-    PicturePo getPicDetail();
+    PicturePo getPicDetail(Long id);
 
     // 分页查询数据
     List<PicturePo> getPicList();
