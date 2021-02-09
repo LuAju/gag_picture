@@ -1,0 +1,19 @@
+snowflake:
+  workId: 1
+  datacenterId: 1
+
+spring:
+  profiles:
+    active: dev
+  elasticsearch:
+    ip: 192.168.10.12
+    port: 9300
+    clusterName: elasticsearch
+    nodeName: node-1
+    pool: 5
+
+
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-nodes: 192.168.10.12:9300 # 程序连接es的端口号是9300
