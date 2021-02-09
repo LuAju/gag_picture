@@ -1,5 +1,6 @@
 package com.cl.fun.gag.pic.controller;
 
+import com.cl.fun.gag.pic.common.result.CommonResult;
 import com.cl.fun.gag.pic.component.SnowflakeComponent;
 import com.cl.fun.gag.pic.entity.PictureDto;
 import com.cl.fun.gag.pic.entity.PicturePo;
@@ -36,6 +37,6 @@ public class PicSubmitController {
         // TODO 后期需要从Controller中获取用户信息
         picturePo.setSubmitter("admin");
         PictureDto save = EntityConverter.picturePo2Dto(picService.savePicturePo(picturePo));
-        return save;
+        return CommonResult.success(save);
     }
 }
