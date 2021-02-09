@@ -1,14 +1,22 @@
 package com.cl.fun.gag.pic.entity;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PictureDto {
     @ApiModelProperty("主键，使用雪花算法生成")
-    private String id;
+    private Long id;
 
     @ApiModelProperty("图片名称")
     private String picName;
@@ -24,7 +32,7 @@ public class PictureDto {
 
     @ApiModelProperty("提交人，默认是管理员")
     @Value("admin")
-    private String submiter;
+    private String submitter;
 
     @ApiModelProperty("图片的创建时间")
     private LocalDateTime createTime;

@@ -2,7 +2,10 @@ package com.cl.fun.gag.pic.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -14,11 +17,14 @@ import java.util.Date;
 
 @Data
 @Document(indexName = "picture",type="picture")
+@Builder
 @ApiModel
+@NoArgsConstructor
+@AllArgsConstructor
 public class PicturePo {
     @Id
     @ApiModelProperty("主键，使用雪花算法生成")
-    private long id;
+    private Long id;
 
     @Field(analyzer = "ik_smart", type = FieldType.Text)
     @ApiModelProperty("图片名称")

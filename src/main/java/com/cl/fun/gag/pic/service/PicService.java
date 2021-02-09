@@ -17,7 +17,7 @@ public interface PicService {
     // 查询最新的,带分页
     List<PicturePo> getRecentPics();
 
-    // 存储图片
+    // 存储图片，返回对象给前台
     PicturePo savePicturePo(PicturePo picturePo);
 
 
