@@ -1,5 +1,6 @@
 package com.cl.fun.gag.pic.controller;
 
+import com.cl.fun.gag.pic.aop.annotation.SearchCounter;
 import com.cl.fun.gag.pic.common.result.CommonResult;
 import com.cl.fun.gag.pic.entity.PicDetailSearchDto;
 import com.cl.fun.gag.pic.entity.PicNameSearchDto;
@@ -29,6 +30,7 @@ public class PicSearchController {
 
     @ApiOperation("通过图片名称简单搜索" )
     @PostMapping("/getPicsByName")
+    @SearchCounter
     public Object getPicsByName(@RequestBody PicNameSearchDto picNameSearchDto){
         // TODO 将搜索添加打redis里
         List<PicturePo> picListByPicName = picService.getPicListByPicName(picNameSearchDto.getPicName(), picNameSearchDto.getPage(), picNameSearchDto.getSize());
@@ -46,9 +48,10 @@ public class PicSearchController {
         }
     }
 
-    @ApiOperation("根据图片名称获取")
+    @ApiOperation("根据图片详情获取")
     @PostMapping("/getPicsByDetail")
-    public Object getPicsByDetial(@RequestBody PicDetailSearchDto picDetailSearchDto){
+    @SearchCounter
+    public Object getPicsByDetail(@RequestBody PicDetailSearchDto picDetailSearchDto){
         // TODO 将搜索添加打redis里
         List<PicturePo> picListByPicDetail = picService.getPicListByPicDetail(picDetailSearchDto.getPicDetail(), picDetailSearchDto.getPage(), picDetailSearchDto.getSize());
         return CommonResult.success(picListByPicDetail);
