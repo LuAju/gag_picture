@@ -1,15 +1,18 @@
 package com.cl.fun.gag.pic.controller;
 
 import com.cl.fun.gag.pic.common.result.CommonResult;
+import com.cl.fun.gag.pic.entity.PicDetailSearchDto;
+import com.cl.fun.gag.pic.entity.PicNameSearchDto;
 import com.cl.fun.gag.pic.entity.PicturePo;
 import com.cl.fun.gag.pic.service.PicService;
 import com.cl.fun.gag.pic.utils.EntityConverter;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/search")
@@ -25,9 +28,11 @@ public class PicSearchController {
     }
 
     @ApiOperation("通过图片名称简单搜索" )
-    @GetMapping("/getPicsByName")
-    public Object getPicsByName(){
-        return null;
+    @PostMapping("/getPicsByName")
+    public Object getPicsByName(@RequestBody PicNameSearchDto picNameSearchDto){
+        // TODO 将搜索添加打redis里
+        List<PicturePo> picListByPicName = picService.getPicListByPicName(picNameSearchDto.getPicName(), picNameSearchDto.getPage(), picNameSearchDto.getSize());
+        return CommonResult.success(picListByPicName);
     }
 
     @ApiOperation("通过图片的主键ID查询")
@@ -39,5 +44,22 @@ public class PicSearchController {
         } else {
             return CommonResult.fail("找不到对应数据");
         }
+    }
+
+    @ApiOperation("根据图片名称获取")
+    @PostMapping("/getPicsByDetail")
+    public Object getPicsByDetial(@RequestBody PicDetailSearchDto picDetailSearchDto){
+        // TODO 将搜索添加打redis里
+        List<PicturePo> picListByPicDetail = picService.getPicListByPicDetail(picDetailSearchDto.getPicDetail(), picDetailSearchDto.getPage(), picDetailSearchDto.getSize());
+        return CommonResult.success(picListByPicDetail);
+    }
+
+    @ApiOperation("搜索热度")
+    @GetMapping("/getTopPicList")
+    public Object getTopPicList(){
+        // TODO 从redis里获取搜索次数
+        List<String> topId = new ArrayList<>();
+        List<PicturePo> topPicList = picService.getTopPicList(topId);
+        return CommonResult.success(topPicList);
     }
 }
