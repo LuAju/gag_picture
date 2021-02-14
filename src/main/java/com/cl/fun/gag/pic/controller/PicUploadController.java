@@ -2,12 +2,13 @@ package com.cl.fun.gag.pic.controller;
 
 import com.cl.fun.gag.pic.common.result.CommonResult;
 import com.cl.fun.gag.pic.component.SnowflakeComponent;
+import com.cl.fun.gag.pic.entity.sql.PicturePo;
+import com.cl.fun.gag.pic.service.sql.PicSQLService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,12 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @Api("图片搜索接口")
@@ -30,6 +28,9 @@ public class PicUploadController {
 
     @Autowired
     private SnowflakeComponent snowflakeComponent;
+
+    @Autowired
+    private PicSQLService picService;
 
     @Value("${filePathPrefix}")
     private String filePathPrefix;
@@ -72,7 +73,15 @@ public class PicUploadController {
         targetFile = new File(parentFile, fileName);
 
         //todo 持久化这条数据
+        PicturePo build = PicturePo.builder()
+                .id(snowflakeComponent.snowflakeId())
+                .location(timePrefixStringBuffer.append(fileName).toString())
+                .uploadTime(LocalDateTime.now()).build();
 
+        int insert = picService.insert(build);
+        if (insert<1) {
+            return CommonResult.error("文件插入数据库失败");
+        }
         try {
             //将上传的文件写到服务器上指定的文件。
             file.transferTo(targetFile);

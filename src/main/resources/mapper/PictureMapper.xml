@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cl.fun.gag.pic.dao.PicDao" >
+
+    <sql id="BASE_TABLE">
+    pic_location
+      </sql>
+
+    <insert id="insert" parameterType="com.cl.fun.gag.pic.entity.sql.PicturePo">
+        INSERT INTO
+        <include refid="BASE_TABLE"/>
+        <trim prefix="VALUES(" suffix=")" suffixOverrides=",">
+            #{id, jdbcType=BIGINT},#{location, jdbcType=VARCHAR},#{uploadTime}
+        </trim>
+    </insert>
+
+
+
+
+</mapper>
