@@ -1,10 +1,9 @@
 package com.cl.fun.gag.pic.service.impl;
 
 import com.cl.fun.gag.pic.dao.PicRepository;
-import com.cl.fun.gag.pic.entity.PictureDto;
 import com.cl.fun.gag.pic.entity.PicturePo;
-import com.cl.fun.gag.pic.entity.SearchQueryEntity;
 import com.cl.fun.gag.pic.service.PicService;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -14,15 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
-import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 
 @Service
 public class PicServiceImpl implements PicService {
@@ -34,7 +29,7 @@ public class PicServiceImpl implements PicService {
     // 使用自带的api进行查询操作，返回的是Optional对象，获取一下
     public PicturePo getPicDetail(Long id) {
         Optional<PicturePo> byId = picRepository.findById(id);
-        if (byId.isPresent()){
+        if (byId.isPresent()) {
             return byId.get();
         } else {
             return null;
@@ -47,10 +42,14 @@ public class PicServiceImpl implements PicService {
     }
 
     @Override
-    public List<PicturePo> getPicListByPicName(String picName,int page,int size) {
+    public List<PicturePo> getPicListByPicName(String picName, int page, int size) {
+        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        queryBuilder.must(QueryBuilders.matchQuery("picName", picName));
+        // 添加图片状态判断，只返回已审核的图片
+        queryBuilder.must(QueryBuilders.termQuery("hasAudited", true));
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.multiMatchQuery(picName,"picName" ))
-                .withPageable(PageRequest.of(page,size))
+                .withQuery(queryBuilder)
+                .withPageable(PageRequest.of(page, size))
                 .build();
         Page<PicturePo> search = picRepository.search(nativeSearchQuery);
         List<PicturePo> content = search.getContent();
@@ -58,10 +57,14 @@ public class PicServiceImpl implements PicService {
     }
 
     @Override
-    public List<PicturePo> getPicListByPicDetail(String picDetail,int page,int size) {
+    public List<PicturePo> getPicListByPicDetail(String picDetail, int page, int size) {
+        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        queryBuilder.must(QueryBuilders.matchQuery("picDetail", picDetail));
+        // 添加图片状态判断，只返回已审核的图片
+        queryBuilder.must(QueryBuilders.termQuery("hasAudited", true));
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.multiMatchQuery(picDetail,"picName" ))
-                .withPageable(PageRequest.of(page,size))
+                .withQuery(queryBuilder)
+                .withPageable(PageRequest.of(page, size))
                 .build();
         Page<PicturePo> search = picRepository.search(nativeSearchQuery);
         List<PicturePo> content = search.getContent();
@@ -82,15 +85,15 @@ public class PicServiceImpl implements PicService {
 
     @Override
     public List<PicturePo> getRecentPics(int page) {
-        return getRecentPics(page,10);
+        return getRecentPics(page, 10);
     }
 
     @Override
-    public List<PicturePo> getRecentPics(int page,int size) {
+    public List<PicturePo> getRecentPics(int page, int size) {
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(QueryBuilders.matchAllQuery())
                 .withSort(SortBuilders.fieldSort("createTime").order(SortOrder.DESC))
-                .withPageable(PageRequest.of(page,10))
+                .withPageable(PageRequest.of(page, 10))
                 .build();
         Page<PicturePo> search = picRepository.search(nativeSearchQuery);
         List<PicturePo> content = search.getContent();
@@ -106,9 +109,9 @@ public class PicServiceImpl implements PicService {
     @Override
     public List<PicturePo> getUnAuditedPicturePo(int page, int size) {
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.termQuery("hasAudited",false))
+                .withQuery(QueryBuilders.termQuery("hasAudited", false))
                 .withSort(SortBuilders.fieldSort("createTime").order(SortOrder.DESC))
-                .withPageable(PageRequest.of(page,size))
+                .withPageable(PageRequest.of(page, size))
                 .build();
         Page<PicturePo> search = picRepository.search(nativeSearchQuery);
         List<PicturePo> content = search.getContent();
@@ -123,19 +126,5 @@ public class PicServiceImpl implements PicService {
         picturePo.setHasAudited(true);
         PicturePo save = picRepository.save(picturePo);
         return save.getHasAudited();
-    }
-
-    public SearchQuery getQueryBuilder(SearchQueryEntity searchQueryEntity){
-        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder();
-        if (searchQueryEntity.getQueryBuilder()!=null){
-            builder = builder.withQuery(searchQueryEntity.getQueryBuilder());
-        }
-        if (searchQueryEntity.getSortBuilder()!=null){
-            builder = builder.withSort(searchQueryEntity.getSortBuilder());
-        }
-        if (searchQueryEntity.getPageable()!=null){
-            builder = builder.withPageable(searchQueryEntity.getPageable());
-        }
-        return builder.build();
     }
 }
