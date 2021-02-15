@@ -1,7 +1,9 @@
 package com.cl.fun.gag.pic.service.impl;
 
 import com.cl.fun.gag.pic.dao.PicRepository;
+import com.cl.fun.gag.pic.entity.PictureDto;
 import com.cl.fun.gag.pic.entity.PicturePo;
+import com.cl.fun.gag.pic.entity.SearchQueryEntity;
 import com.cl.fun.gag.pic.service.PicService;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -98,5 +101,41 @@ public class PicServiceImpl implements PicService {
     public PicturePo savePicturePo(PicturePo picturePo) {
         PicturePo save = picRepository.save(picturePo);
         return save;
+    }
+
+    @Override
+    public List<PicturePo> getUnAuditedPicturePo(int page, int size) {
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.termQuery("hasAudited",false))
+                .withSort(SortBuilders.fieldSort("createTime").order(SortOrder.DESC))
+                .withPageable(PageRequest.of(page,size))
+                .build();
+        Page<PicturePo> search = picRepository.search(nativeSearchQuery);
+        List<PicturePo> content = search.getContent();
+        return content;
+
+    }
+
+    @Override
+    public boolean saveAuditedPicturePo(Long id) {
+        Optional<PicturePo> byId = picRepository.findById(id);
+        PicturePo picturePo = byId.get();
+        picturePo.setHasAudited(true);
+        PicturePo save = picRepository.save(picturePo);
+        return save.getHasAudited();
+    }
+
+    public SearchQuery getQueryBuilder(SearchQueryEntity searchQueryEntity){
+        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder();
+        if (searchQueryEntity.getQueryBuilder()!=null){
+            builder = builder.withQuery(searchQueryEntity.getQueryBuilder());
+        }
+        if (searchQueryEntity.getSortBuilder()!=null){
+            builder = builder.withSort(searchQueryEntity.getSortBuilder());
+        }
+        if (searchQueryEntity.getPageable()!=null){
+            builder = builder.withPageable(searchQueryEntity.getPageable());
+        }
+        return builder.build();
     }
 }

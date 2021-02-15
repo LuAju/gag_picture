@@ -1,5 +1,6 @@
 package com.cl.fun.gag.pic.service;
 
+import com.cl.fun.gag.pic.entity.PictureDto;
 import com.cl.fun.gag.pic.entity.PicturePo;
 
 import java.util.List;
@@ -30,5 +31,10 @@ public interface PicService {
     // 存储图片，返回对象给前台
     PicturePo savePicturePo(PicturePo picturePo);
 
+    // 获取所有未审核的图片
+    List<PicturePo> getUnAuditedPicturePo(int page,int size);
+
+    // 审核图片
+    boolean saveAuditedPicturePo(Long id);
 
 }

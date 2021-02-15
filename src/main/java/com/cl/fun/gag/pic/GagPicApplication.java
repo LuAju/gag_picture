@@ -10,8 +10,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @MapperScan("com.cl.fun.gag.pic.dao")
 public class GagPicApplication {
 
-    public static void main(String[] args) {
+    static {
         System.setProperty("es.set.netty.runtime.available.processors","false");
+    }
+
+    public static void main(String[] args) {
+
         SpringApplication.run(GagPicApplication.class, args);
     }
 
