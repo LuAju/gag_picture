@@ -42,6 +42,11 @@ spring:
       pool-prepared-statements: false
       max-pool-prepared-statement-per-connection-size: 20
 
+rocketmq:
+  name-server: 192.168.10.12:9876
+  producer:
+    group: gag-pic-log
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
   type-aliases-package: com.cl.fun.gag.pic.entity.sql  # 注意：对应实体类的路径

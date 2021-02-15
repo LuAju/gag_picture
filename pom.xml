@@ -93,6 +93,12 @@
             <version>1.1.9</version>
         </dependency>
 
+        <!-- rocketmq -->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+            <version>2.0.2</version>
+        </dependency>
     </dependencies>
 
     <build>
