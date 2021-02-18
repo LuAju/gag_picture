@@ -42,6 +42,7 @@ public class PicSearchController {
 
     @ApiOperation("通过图片的主键ID查询")
     @GetMapping("/getPicByPrimaryKey/{id}")
+    @SysLog
     public Object getPicByPrimaryKey(@PathVariable("id") String id){
         PicturePo picDetail = picService.getPicDetail(Long.valueOf(id));
         if (picDetail!=null) {

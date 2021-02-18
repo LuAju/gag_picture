@@ -1,5 +1,6 @@
 package com.cl.fun.gag.pic.entity.auth;
 
+import com.cl.fun.gag.pic.entity.UserPo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,17 +13,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails {
+public class UserManageDetails implements UserDetails {
 
-    private String username;
-
-    private Integer id;
-
-    private String password;
-
-    private Boolean enable;
-
-    private Boolean locked;
+    private UserPo userPo;
 
     private List<Role> roleList;
 
@@ -34,12 +27,12 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return userPo.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return userPo.getUsername();
     }
 
     @Override
