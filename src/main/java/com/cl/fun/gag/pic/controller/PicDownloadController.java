@@ -18,6 +18,7 @@ public class PicDownloadController {
     @GetMapping("/fileDownload")
     public void fileDownload(@RequestParam("fileName") String fileName, HttpServletResponse response){
         try {
+            // 根据全路径，获取文件
             Files.copy(Paths.get(filePathPrefix + fileName), response.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();

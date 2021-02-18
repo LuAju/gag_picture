@@ -11,6 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ *
+ *  401的异常处理类
+ *
+ * */
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override

@@ -49,16 +49,18 @@ public class SystemLogAspect {
 
     @Around("syslogPointcut()")
     public Object around(ProceedingJoinPoint joinPoint) {
+        // 使用JDK的API记录接口的处理时间
         Stopwatch stopwatch = Stopwatch.createStarted();
         Date start = new Date();
         Object result = null;
         try {
+            // 运行方法
             result = joinPoint.proceed();
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
         try {
-
+            // 获取请求的相关信息
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             // ip地址
             String ipAddr = getRemoteHost(request);
@@ -85,7 +87,9 @@ public class SystemLogAspect {
             }
 
             stopwatch.stop();
+            // 获取请求的处理时间
             long timeConsuming = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+            // 拼接日志对象
             ESLog esLog = ESLog.builder()
                     .costTime(timeConsuming)
                     .createBy("admin")
@@ -100,8 +104,7 @@ public class SystemLogAspect {
                 UserManageDetails details = (UserManageDetails) authentication.getPrincipal();
                 esLog.setUsername(details.getUsername());
             }
-
-
+            // 发送到消息服务器中
             sendMsg(esLog);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
@@ -110,6 +113,11 @@ public class SystemLogAspect {
         return result;
     }
 
+    /**
+     *
+     *  获取主机的地址信息
+     *
+     * */
     private String getRemoteHost(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
@@ -124,8 +132,15 @@ public class SystemLogAspect {
         return ip.contains("0:0:0:0:0:0:0:1") ? "127.0.0.1" : ip;
     }
 
+    /**
+     *
+     *
+     *  发送消息到服务器
+     *
+     * */
     public void sendMsg(ESLog esLog) {
         JSONObject jsonObject = new JSONObject();
+        // 消息序列化。
         jsonObject.put("log", esLog);
         Message<String> message = MessageBuilder.withPayload(jsonObject.toJSONString()).build();
         rocketMQTemplate.convertAndSend(txDestination, message);

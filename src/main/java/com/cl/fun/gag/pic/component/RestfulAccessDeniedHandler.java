@@ -11,6 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ *
+ *  403的异常处理类
+ *
+ * */
 @Component
 public class RestfulAccessDeniedHandler implements AccessDeniedHandler {
     @Override

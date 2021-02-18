@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ *
+ *  封装 登录用的账号密码对象
+ *
+ * */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

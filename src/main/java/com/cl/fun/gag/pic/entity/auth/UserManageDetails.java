@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class UserManageDetails implements UserDetails {
 
+    /** 数据库的user对象 */
     private UserPo userPo;
 
     private List<Role> roleList;
