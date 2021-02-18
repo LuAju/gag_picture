@@ -3,6 +3,7 @@ package com.cl.fun.gag.pic.aop.aspect;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cl.fun.gag.pic.entity.ESLog;
+import com.cl.fun.gag.pic.entity.auth.UserManageDetails;
 import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -91,6 +94,14 @@ public class SystemLogAspect {
                     .requestParam(argList.toString())
                     .requestUrl(requestUrl)
                     .username("guest").build();
+            // 从上下文中获取用户名，如果为空，则使用 guest填充
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.getPrincipal() != null) {
+                UserManageDetails details = (UserManageDetails) authentication.getPrincipal();
+                esLog.setUsername(details.getUsername());
+            }
+
+
             sendMsg(esLog);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
@@ -117,7 +128,7 @@ public class SystemLogAspect {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("log", esLog);
         Message<String> message = MessageBuilder.withPayload(jsonObject.toJSONString()).build();
-        rocketMQTemplate.convertAndSend(txDestination,message);
+        rocketMQTemplate.convertAndSend(txDestination, message);
 //        TransactionSendResult sendResult =
 //                rocketMQTemplate.sendMessageInTransaction(txProduceGroup, "topic_txmsg", message, null);
 //        log.debug("send msg body = {},result={}", message.getPayload(), sendResult.getSendStatus());
