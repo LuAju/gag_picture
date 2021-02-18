@@ -31,4 +31,13 @@ public class CommonResult  {
     public static CommonResult error (String msg){
         return new CommonResult(-1, msg);
     }
+
+    public static CommonResult forbidden(String msg){
+        return new CommonResult(403, msg);
+    }
+
+
+    public static CommonResult unauthorized(String msg){
+        return new CommonResult(401, msg);
+    }
 }
