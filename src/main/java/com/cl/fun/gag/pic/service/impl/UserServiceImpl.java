@@ -1,7 +1,11 @@
 package com.cl.fun.gag.pic.service.impl;
 
+import com.cl.fun.gag.pic.customizeexception.NameDuplicateException;
+import com.cl.fun.gag.pic.dao.UserMapper;
+import com.cl.fun.gag.pic.entity.UserPo;
 import com.cl.fun.gag.pic.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 @Slf4j
@@ -24,8 +30,8 @@ public class UserServiceImpl {
     private PasswordEncoder passwordEncoder;
     @Value("${jwt.tokenHead}")
     private String tokenHead;
-//    @Autowired
-//    private UmsAdminMapper adminMapper;
+    @Autowired
+    private UserMapper userMapper;
 //    @Autowired
 //    private UmsAdminRoleRelationDao adminRoleRelationDao;
 
@@ -44,5 +50,22 @@ public class UserServiceImpl {
             log.warn("登录异常:{}", e.getMessage());
         }
         return token;
+    }
+
+    public UserPo register(UserPo userPoParam){
+        UserPo userPo = new UserPo();
+        BeanUtils.copyProperties(userPoParam,userPo);
+        // 如果当前已经有了,直接抛异常
+        if (userMapper.getUserByUsername(userPo.getUsername())!=null){
+            throw new NameDuplicateException();
+        }
+        userPo.setPassword(passwordEncoder.encode(userPo.getPassword()));
+        userPo.setCreateTime(new Date());
+        userPo.setStatus(1);
+        int i = userMapper.insertUser(userPo);
+        if (i == 1) {
+            return userPo;
+        }
+        return null;
     }
 }

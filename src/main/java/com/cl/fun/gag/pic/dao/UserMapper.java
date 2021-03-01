@@ -11,4 +11,6 @@ public interface UserMapper {
     UserPo getUserByUsername(String username);
 
     List<Role> getRoleListByUsername(String username);
+
+    int insertUser(UserPo userPo);
 }

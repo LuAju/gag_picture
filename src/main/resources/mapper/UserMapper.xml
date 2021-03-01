@@ -17,7 +17,9 @@
     <sql id="Base_Column_List">
     id, username, password, icon, email, nick_name, note, create_time, login_time, status
   </sql>
-
+    <sql id="insert_Column_List">
+      username, password, icon, email, nick_name, note, create_time, login_time, status
+  </sql>
     <select id="getUserByUsername" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -27,7 +29,13 @@
         username = #{username}
     </select>
 
-
+    <insert id="insertUser" parameterType="com.cl.fun.gag.pic.entity.UserPo">
+        insert into ums_admin (
+        <include refid="insert_Column_List"/>
+        )
+        values
+        (#{username},#{password},#{icon},#{email},#{nickName},#{note},#{createTime},#{loginTime},#{status})
+    </insert>
 
 
 </mapper>
