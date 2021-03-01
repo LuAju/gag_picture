@@ -19,5 +19,4 @@ public class PicturePo {
     private Long id;
     private String location;
     private LocalDateTime uploadTime;
-
 }
