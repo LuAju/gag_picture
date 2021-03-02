@@ -26,7 +26,7 @@ public class UserManageController {
 
 
     @PostMapping("/login")
-    @ApiOperation("用户登录接口")
+    @ApiOperation("用户登录接口,测试账号admin 密码123456")
     public Object login(@RequestBody UserDto userDto){
         String token = userService.login(userDto.getUsername(), userDto.getPassword());
         if (token == null) {

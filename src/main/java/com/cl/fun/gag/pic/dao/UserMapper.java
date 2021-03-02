@@ -16,6 +16,6 @@ public interface UserMapper {
 
     int insertUser(UserPo userPo);
 
-    List<UmsPermission> getUserPermission(@Param("userId") Integer userId);
+    List<UmsPermission> getUserPermission(@Param("userId") Long userId);
 
 }

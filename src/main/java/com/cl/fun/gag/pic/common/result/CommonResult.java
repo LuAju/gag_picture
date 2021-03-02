@@ -40,13 +40,17 @@ public class CommonResult  {
     public static CommonResult forbidden(String msg){
         return new CommonResult(403, msg);
     }
+    public static CommonResult unauthorized(String msg){
+        return new CommonResult(403, msg);
+    }
 
     /**
      *
      *  未认证时的请求
      *
      * */
-    public static CommonResult unauthorized(String msg){
+    public static CommonResult unAuthen(String msg){
         return new CommonResult(401, msg);
     }
+
 }

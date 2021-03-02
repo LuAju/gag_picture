@@ -48,6 +48,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // 设置白名单
                 .antMatchers("/ums/**").permitAll()
+                // 添加ico的白名单,不知道为什么会有一个这样的请求，之前的ums的登录注册都没有的，不知道跟401的重定向有没有关系
+                .antMatchers("/favicon.ico").permitAll()
+                .antMatchers("/permission/**").permitAll()
+
+
                 // 其余的都要认证
                 .anyRequest().authenticated();
         // 在这个拦截器之前添加拦截器

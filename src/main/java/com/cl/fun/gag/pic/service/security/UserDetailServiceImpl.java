@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 
 /**
  *
@@ -28,8 +30,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
         if (userPo == null){
             throw new UsernameNotFoundException("");
         }
-//        userManageDetails.setRoleList(userMapper.getRoleListByUsername(username));
-        UserManageDetails userManageDetails = new UserManageDetails(userPo, null);
+        // 这里要存进去
+        UserManageDetails userManageDetails = new UserManageDetails(userPo, userMapper.getUserPermission(userPo.getId()));
         return userManageDetails;
     }
 }
