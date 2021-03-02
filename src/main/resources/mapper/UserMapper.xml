@@ -37,5 +37,17 @@
         (#{username},#{password},#{icon},#{email},#{nickName},#{note},#{createTime},#{loginTime},#{status})
     </insert>
 
+    <select id="getUserPermission" resultType="com.cl.fun.gag.pic.entity.sql.UmsPermission" >
+        SELECT
+            p.*
+        FROM
+            ums_admin_role_relation ar
+            LEFT JOIN ums_role r ON ar.role_id = r.id
+            LEFT JOIN ums_role_permission_relation rp ON r.id = rp.role_id
+            LEFT JOIN ums_permission p ON rp.permission_id = p.id
+        WHERE
+            ar.admin_id = #{userId}
+            AND p.id IS NOT NULL
+    </select>
 
 </mapper>
