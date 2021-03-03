@@ -24,6 +24,7 @@ public class PicDownloadController {
             // 根据全路径，获取文件
             Files.copy(Paths.get(filePathPrefix + fileName), response.getOutputStream());
         } catch (NoSuchFileException e) {
+            // 找不到路径时，手动跑出这个异常，因为上面的异常不是运行时异常无法被全局异常处理器捕获
             throw new NoSuchLocationFileException();
         } catch (IOException e) {
             e.printStackTrace();

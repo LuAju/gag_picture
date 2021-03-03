@@ -23,13 +23,6 @@ public class PicSearchController {
     @Autowired
     private PicService picService;
 
-    @ApiOperation("测试")
-    @GetMapping("/")
-    public Object get(){
-        int a = 1 / 0;
-        return "ss";
-    }
-
     @ApiOperation("通过图片名称简单搜索" )
     @PostMapping("/getPicsByName")
     @SysLog
