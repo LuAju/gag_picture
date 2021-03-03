@@ -2,7 +2,9 @@ package com.cl.fun.gag.pic.service.impl;
 
 import com.cl.fun.gag.pic.customizeexception.NameDuplicateException;
 import com.cl.fun.gag.pic.dao.UserMapper;
+import com.cl.fun.gag.pic.dao.UserRoleDao;
 import com.cl.fun.gag.pic.entity.UserPo;
+import com.cl.fun.gag.pic.entity.sql.UserRoleRelationShip;
 import com.cl.fun.gag.pic.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -32,8 +35,9 @@ public class UserServiceImpl {
     private String tokenHead;
     @Autowired
     private UserMapper userMapper;
-//    @Autowired
-//    private UmsAdminRoleRelationDao adminRoleRelationDao;
+
+    @Autowired
+    private UserRoleDao userRoleDao;
 
 
     public String login(String username, String password) {
@@ -52,6 +56,8 @@ public class UserServiceImpl {
         return token;
     }
 
+    // 使用事务，插入用户关系失败时，取消新建用户的操作
+    @Transactional
     public UserPo register(UserPo userPoParam){
         UserPo userPo = new UserPo();
         BeanUtils.copyProperties(userPoParam,userPo);
@@ -64,7 +70,16 @@ public class UserServiceImpl {
         userPo.setStatus(1);
         int i = userMapper.insertUser(userPo);
         if (i == 1) {
-            return userPo;
+            // 获取插入后的主键id
+            Long id = userPo.getId();
+            UserRoleRelationShip userRoleRelationShip = new UserRoleRelationShip();
+            userRoleRelationShip.setAdminId(id);
+            userRoleRelationShip.setRoleId(2L);
+            int insert = userRoleDao.insert(userRoleRelationShip);
+            if (insert ==1) {
+                return userPo;
+            }
+            return null;
         }
         return null;
     }

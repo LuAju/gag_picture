@@ -29,7 +29,7 @@
         username = #{username}
     </select>
 
-    <insert id="insertUser" parameterType="com.cl.fun.gag.pic.entity.UserPo">
+    <insert id="insertUser" parameterType="com.cl.fun.gag.pic.entity.UserPo" useGeneratedKeys="true" keyProperty="id">
         insert into ums_admin (
         <include refid="insert_Column_List"/>
         )
