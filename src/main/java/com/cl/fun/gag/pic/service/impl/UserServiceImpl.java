@@ -68,4 +68,14 @@ public class UserServiceImpl {
         }
         return null;
     }
+
+    public boolean usernameDuplicate(String username){
+        // 如果当前已经有了,直接抛异常
+        if (userMapper.getUserByUsername(username)!=null){
+            return true;
+        }
+        return false;
+    }
+
+
 }

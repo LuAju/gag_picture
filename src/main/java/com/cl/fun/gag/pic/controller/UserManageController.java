@@ -47,4 +47,15 @@ public class UserManageController {
         }
         return CommonResult.success("创建用户成功") ;
     }
+
+    @GetMapping("/usernameDuplicate/{username}")
+    @ApiOperation("获取用户名")
+    public Object usernameDuplicate(@PathVariable String username){
+
+        Boolean isDuplicate = userService.usernameDuplicate(username);
+        if (isDuplicate){
+            return CommonResult.fail("当前用户名不可用");
+        }
+        return CommonResult.success("当前用户名可用") ;
+    }
 }
