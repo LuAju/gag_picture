@@ -8,6 +8,9 @@ import com.cl.fun.gag.pic.service.PicService;
 import com.cl.fun.gag.pic.utils.EntityConverter;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,8 +37,10 @@ public class PicSubmitController {
         picturePo.setCreateTime(new Date());
         picturePo.setHasAudited(false);
         picturePo.setIsDisplaying(false);
-        // TODO 后期需要从Controller中获取用户信息
-        picturePo.setSubmitter("admin");
+        // 从登录信息中获取图片
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        picturePo.setSubmitter(username);
         PictureDto save = EntityConverter.picturePo2Dto(picService.savePicturePo(picturePo));
         return CommonResult.success(save);
     }
