@@ -39,4 +39,16 @@ public class MyExceptionHandler {
     public Object noSuchFileExceptionHandler(Exception e) {
         return CommonResult.error("无法根据文件地址获取指定图片");
     }
+
+
+    /**
+     *   添加兜底方法，具体的信息在构造属性添加。
+     *   例如： new RuntimeException("新增用户时，报错")
+     *
+     * */
+
+    @ExceptionHandler(value = RuntimeException.class)
+    public Object runtimeExceptionHandler(Exception e) {
+        return CommonResult.error(e.getMessage());
+    }
 }
