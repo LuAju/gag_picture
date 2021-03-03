@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+// 实现spring security的接口
 public class UserManageDetails implements UserDetails {
 
     /** 数据库的user对象 */
@@ -25,6 +26,12 @@ public class UserManageDetails implements UserDetails {
 
 
     @Override
+    /**
+     *  获取用户的权限信息
+     *  根据用户的权限信息，获取其中的value字符串（也就是@PreAuthorize("hasAuthority('pms:product:createff')")中的单引号内的文本），
+     *  并根据该字符串封装权限对象。最后将包含所有权限对象的集合返回。
+     *
+     * */
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.permissionList.stream()
                 // 保留符合过滤条件的

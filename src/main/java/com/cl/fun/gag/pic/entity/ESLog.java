@@ -2,6 +2,8 @@ package com.cl.fun.gag.pic.entity;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +19,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ApiModel(value="用户浏览日志类",description = "用于记录用户的浏览日志，经由MQ发送给日志的处理端")
 public class ESLog {
     @Id
     private String id;
@@ -33,6 +36,7 @@ public class ESLog {
     /**
      * 时间戳 查询时间范围时使用
      */
+    @ApiModelProperty(name = "浏览的起始时间")
     private Long timeMillis = System.currentTimeMillis();
     /**
      * 方法操作名称
