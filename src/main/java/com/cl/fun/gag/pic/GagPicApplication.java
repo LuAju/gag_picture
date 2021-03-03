@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
-@EnableSwagger2
+
 @MapperScan("com.cl.fun.gag.pic.dao")
 // 需要添加这个注解，否则鉴权注解无效
 @EnableGlobalMethodSecurity(prePostEnabled = true)

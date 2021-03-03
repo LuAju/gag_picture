@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,10 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Date;
 
 @RestController
-@Api("图片搜索接口")
+@Api(value = "文件上传接口",description = "上传文件")
 @Slf4j
 public class PicUploadController {
 
@@ -35,9 +34,9 @@ public class PicUploadController {
     @Value("${filePathPrefix}")
     private String filePathPrefix;
 
-    @PostMapping(value = "/fileUpload")
+    @PutMapping(value = "/fileUpload")
     @ApiOperation("图片上传接口，返回图片的地址")
-    public Object uploadPicture(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+    public Object uploadPicture(@RequestParam(value = "file") MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
         int maxSize = 1024 * 1024 * 5;    //上传最大为1MB
         if (file.getSize()>maxSize) {
             return CommonResult.fail("文件长度不能大于5M");
@@ -63,7 +62,6 @@ public class PicUploadController {
             parentFile.mkdirs();
         }
 
-
         // 获取文件的后缀名
         String fileSuffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         StringBuffer fileNameSB = new StringBuffer();
@@ -72,7 +70,7 @@ public class PicUploadController {
         //将图片存入文件夹
         targetFile = new File(parentFile, fileName);
 
-        //todo 持久化这条数据
+        // 图片信息持久化到数据库中
         PicturePo build = PicturePo.builder()
                 .id(snowflakeComponent.snowflakeId())
                 .location(timePrefixStringBuffer.append(fileName).toString())
@@ -85,7 +83,7 @@ public class PicUploadController {
         try {
             //将上传的文件写到服务器上指定的文件。
             file.transferTo(targetFile);
-            return CommonResult.success(timePrefixStringBuffer.append(fileName));
+            return CommonResult.success(timePrefixStringBuffer.toString());
         } catch (Exception e) {
             e.printStackTrace();
             return CommonResult.error("上传服务器报错：" + e.getMessage());
