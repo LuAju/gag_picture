@@ -43,9 +43,21 @@ spring:
       max-pool-prepared-statement-per-connection-size: 20
 
 rocketmq:
-  name-server: 192.168.10.12:9876
+#  name-server: 192.168.10.12:9876
+  name-server: 127.0.0.1:9876
   producer:
     group: gag-pic-log
+#    syslog:
+#      topic: syslog
+#      message-group: syslogProducer
+#  consumer:
+#    syslog:
+#      topic: syslog
+#      message-group: syslogConsumer
+mq:
+  syslog:
+    topic: syslog
+    consumer-group: syslogConsumer
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
@@ -56,5 +68,5 @@ mybatis:
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
   secret: mySecret #JWT加解密使用的密钥
-  expiration: 604800 #JWT的超期限时间(60*60*24)
+  expiration: 604800 #JWT的超期限时间(60*60*24*7)
   tokenHead: Bearer  #JWT负载中拿到开头

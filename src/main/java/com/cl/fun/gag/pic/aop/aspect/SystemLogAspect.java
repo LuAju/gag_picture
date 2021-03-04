@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cl.fun.gag.pic.entity.ESLog;
 import com.cl.fun.gag.pic.entity.auth.UserManageDetails;
+import com.cl.fun.gag.pic.service.impl.RocketMQService;
 import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
@@ -42,7 +43,11 @@ public class SystemLogAspect {
     @Value("pic_log")
     private String txDestination;
 
-    @Pointcut("@annotation(com.cl.fun.gag.pic.aop.annotation.SysLog)")
+    @Autowired
+    private RocketMQService rocketMQService;
+
+//    @Pointcut("@annotation(com.cl.fun.gag.pic.aop.annotation.SysLog)")
+    @Pointcut("execution(* com.cl.fun.gag.pic.controller.*.*(..))")
     public void syslogPointcut() {
 
     }
@@ -139,11 +144,12 @@ public class SystemLogAspect {
      *
      * */
     public void sendMsg(ESLog esLog) {
-        JSONObject jsonObject = new JSONObject();
-        // 消息序列化。
-        jsonObject.put("log", esLog);
-        Message<String> message = MessageBuilder.withPayload(jsonObject.toJSONString()).build();
-        rocketMQTemplate.convertAndSend(txDestination, message);
+        rocketMQService.sendSysLogMessage(esLog);
+//        JSONObject jsonObject = new JSONObject();
+//        // 消息序列化。
+//        jsonObject.put("log", esLog);
+//        Message<String> message = MessageBuilder.withPayload(jsonObject.toJSONString()).build();
+//        rocketMQTemplate.convertAndSend(txDestination, message);
 //        TransactionSendResult sendResult =
 //                rocketMQTemplate.sendMessageInTransaction(txProduceGroup, "topic_txmsg", message, null);
 //        log.debug("send msg body = {},result={}", message.getPayload(), sendResult.getSendStatus());
