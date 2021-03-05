@@ -51,7 +51,6 @@ public class UserManageController {
     @GetMapping("/usernameDuplicate/{username}")
     @ApiOperation("获取用户名")
     public Object usernameDuplicate(@PathVariable String username){
-
         Boolean isDuplicate = userService.usernameDuplicate(username);
         if (isDuplicate){
             return CommonResult.fail("当前用户名不可用");
