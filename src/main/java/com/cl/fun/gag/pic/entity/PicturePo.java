@@ -1,5 +1,6 @@
 package com.cl.fun.gag.pic.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -48,7 +50,8 @@ public class PicturePo {
     private String submitter;
 
     @ApiModelProperty("图片的创建时间")
-    @Field(analyzer = "ik_smart", type = FieldType.Date)
+    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @Field(type = FieldType.Date, index = false, format = DateFormat.custom,pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty("图片已经被审核")
@@ -60,7 +63,8 @@ public class PicturePo {
     private Boolean isDisplaying;
 
     @ApiModelProperty("图片的修改时间")
-    @Field(analyzer = "ik_smart", type = FieldType.Text)
+    @JsonFormat(shape = JsonFormat.Shape.STRING,timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @Field(type = FieldType.Date, index = false, format = DateFormat.custom,pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
 }

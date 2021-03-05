@@ -1,0 +1,38 @@
+PUT picture
+{
+"mappings": {
+      "picture": {
+        "properties": {
+          "createTime": {
+            "type": "date",
+            "format": "yyyy-MM-dd HH:mm:ss"
+          },
+          "hasAudited": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "long"
+          },
+          "isDisplaying": {
+            "type": "boolean"
+          },
+          "picDetail": {
+            "type": "text",
+            "analyzer":"ik_smart"
+          },
+          "picLocation": {
+            "type": "text",
+            "analyzer":"ik_smart"
+          },
+          "picName": {
+            "type": "text",
+            "analyzer":"ik_smart"
+          },
+          "picType": {
+            "type": "text",
+            "analyzer":"ik_smart"
+          }
+        }
+      }
+    }
+}
