@@ -98,7 +98,7 @@ public class SystemLogAspect {
             ESLog esLog = ESLog.builder()
                     .costTime(timeConsuming)
                     .createBy("admin")
-                    .createTime(start)
+//                    .createTime(start)
                     .ip(ipAddr)
                     .requestParam(argList.toString())
                     .requestUrl(requestUrl)

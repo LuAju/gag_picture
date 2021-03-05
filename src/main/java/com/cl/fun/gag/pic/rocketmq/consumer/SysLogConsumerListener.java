@@ -1,16 +1,22 @@
 package com.cl.fun.gag.pic.rocketmq.consumer;
 
 import com.alibaba.fastjson.JSON;
+import com.cl.fun.gag.pic.dao.SyslogRepository;
 import com.cl.fun.gag.pic.entity.ESLog;
+import com.cl.fun.gag.pic.service.impl.SysLogServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RocketMQMessageListener(topic = "${mq.syslog.topic}", consumerGroup = "${mq.syslog.consumer-group}")
 public class SysLogConsumerListener implements RocketMQListener<String> {
+
+    @Autowired
+    private SysLogServiceImpl sysLogService;
 
     @Override
     public void onMessage(String message) {
@@ -19,5 +25,6 @@ public class SysLogConsumerListener implements RocketMQListener<String> {
         System.out.println(esLog);
         log.debug("Receive message：" + esLog);
         // todo 这里加上进入es的处理
+        sysLogService.save(esLog);
     }
 }
