@@ -2,6 +2,7 @@ package com.cl.fun.gag.pic.aop.aspect;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cl.fun.gag.pic.component.SnowflakeComponent;
 import com.cl.fun.gag.pic.entity.ESLog;
 import com.cl.fun.gag.pic.entity.auth.UserManageDetails;
 import com.cl.fun.gag.pic.service.impl.RocketMQService;
@@ -46,6 +47,9 @@ public class SystemLogAspect {
     @Autowired
     private RocketMQService rocketMQService;
 
+    @Autowired
+    private SnowflakeComponent snowflakeComponent;
+
 //    @Pointcut("@annotation(com.cl.fun.gag.pic.aop.annotation.SysLog)")
     @Pointcut("execution(* com.cl.fun.gag.pic.controller.*.*(..))")
     public void syslogPointcut() {
@@ -84,11 +88,13 @@ public class SystemLogAspect {
                 // request/response无法使用toJSON
                 if (arg instanceof HttpServletRequest) {
                     argList.add("request");
-                } else if (arg instanceof HttpServletResponse) {
-                    argList.add("response");
-                } else {
-                    argList.add(JSON.toJSON(arg));
                 }
+                if (arg instanceof HttpServletResponse) {
+                    argList.add("response");
+                }
+//                else {
+//                    argList.add(JSON.toJSON(arg));
+//                }
             }
 
             stopwatch.stop();
@@ -96,6 +102,8 @@ public class SystemLogAspect {
             long timeConsuming = stopwatch.elapsed(TimeUnit.MILLISECONDS);
             // 拼接日志对象
             ESLog esLog = ESLog.builder()
+                    // 插入es时需要添加主键，否则都为null会被覆盖
+                    .id(snowflakeComponent.snowflakeId())
                     .costTime(timeConsuming)
                     .createBy("admin")
 //                    .createTime(start)
